@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="New" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/New" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="Source/Core" />
+					<Add directory="Source/State" />
+					<Add directory="Source/Texture" />
+					<Add directory="Source/Attack" />
+					<Add directory="Source/Characters" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/New" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="Source/Core" />
+					<Add directory="Source/State" />
+					<Add directory="Source/Texture" />
+					<Add directory="Source/Attack" />
+					<Add directory="Source/Characters" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="C:/sdl/x86_64-w64-mingw32/include" />
+			<Add directory="C:/sdl/x86_64-w64-mingw32/include/SDL2" />
+			<Add directory="Source/Core" />
+			<Add directory="Source/Characters" />
+			<Add directory="Source/Map" />
+			<Add directory="Source/Object" />
+			<Add directory="Source/Physics" />
+			<Add directory="Source/State" />
+			<Add directory="Source/Texture" />
+			<Add directory="Source/Wigdet" />
+		</Compiler>
+		<Linker>
+			<Add option="-lSDL2_image -lSDL2_ttf -lSDL2_mixer" />
+			<Add library="mingw32" />
+			<Add library="SDL2main" />
+			<Add library="SDL2.dll" />
+			<Add library="user32" />
+			<Add library="gdi32" />
+			<Add library="winmm" />
+			<Add library="dxguid" />
+			<Add directory="C:/sdl/x86_64-w64-mingw32/lib" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="XCOPY $(#sdl2)\bin\*.dll $(TARGET_OUTPUT_DIR) /D /Y" />
+		</ExtraCommands>
+		<Unit filename="SDL2.dll" />
+		<Unit filename="SDL2_image.dll" />
+		<Unit filename="SDL2_mixer.dll" />
+		<Unit filename="SDL2_ttf.dll" />
+		<Unit filename="Source/Attack/Attack.h" />
+		<Unit filename="Source/Characters/Character.h" />
+		<Unit filename="Source/Characters/Enemy.cpp" />
+		<Unit filename="Source/Characters/Enemy.h" />
+		<Unit filename="Source/Characters/Player.cpp" />
+		<Unit filename="Source/Characters/Player.h" />
+		<Unit filename="Source/Core/Camera.cpp" />
+		<Unit filename="Source/Core/Camera.h" />
+		<Unit filename="Source/Core/Engine.cpp" />
+		<Unit filename="Source/Core/Engine.h" />
+		<Unit filename="Source/Core/Input.cpp" />
+		<Unit filename="Source/Core/Input.h" />
+		<Unit filename="Source/Core/Point.h" />
+		<Unit filename="Source/Core/Timer.cpp" />
+		<Unit filename="Source/Core/Timer.h" />
+		<Unit filename="Source/Map/GameMap.h" />
+		<Unit filename="Source/Map/Layer.h" />
+		<Unit filename="Source/Map/MapParser.cpp" />
+		<Unit filename="Source/Map/MapParser.h" />
+		<Unit filename="Source/Map/TileLayer.cpp" />
+		<Unit filename="Source/Map/TileLayer.h" />
+		<Unit filename="Source/Map/tinystr.cpp" />
+		<Unit filename="Source/Map/tinystr.h" />
+		<Unit filename="Source/Map/tinyxml.cpp" />
+		<Unit filename="Source/Map/tinyxml.h" />
+		<Unit filename="Source/Map/tinyxmlerror.cpp" />
+		<Unit filename="Source/Map/tinyxmlparser.cpp" />
+		<Unit filename="Source/Object/GameObject.h" />
+		<Unit filename="Source/Object/IObject.h" />
+		<Unit filename="Source/Physics/Collider.h" />
+		<Unit filename="Source/Physics/CollisionHandler.cpp" />
+		<Unit filename="Source/Physics/CollisionHandler.h" />
+		<Unit filename="Source/Physics/RigidBody.h" />
+		<Unit filename="Source/Physics/Transform.h" />
+		<Unit filename="Source/Physics/Vector2d.h" />
+		<Unit filename="Source/State/Menu.cpp" />
+		<Unit filename="Source/State/Menu.h" />
+		<Unit filename="Source/State/Pause.cpp" />
+		<Unit filename="Source/State/Pause.h" />
+		<Unit filename="Source/State/Play.cpp" />
+		<Unit filename="Source/State/Play.h" />
+		<Unit filename="Source/State/State.h" />
+		<Unit filename="Source/Texture/Animation.cpp" />
+		<Unit filename="Source/Texture/Animation.h" />
+		<Unit filename="Source/Texture/Texture.cpp" />
+		<Unit filename="Source/Texture/Texture.h" />
+		<Unit filename="Source/Wigdet/Button.cpp" />
+		<Unit filename="Source/Wigdet/Button.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
