@@ -31,6 +31,7 @@ void Play::Init()
     m_LevelMap = MapParser::GetInstance()->GetMap("map0001");
     player = new Player(new Properties("Player", 100, 300, 100, 74));
     smile = new Enemy(new Properties("Smile", 200, 400, 32, 25), 8, 8, 5);
+    smile->SetPlayer(player);
     Camera::GetInstance()->SetTarget( player->GetOrigin() );
 }
 

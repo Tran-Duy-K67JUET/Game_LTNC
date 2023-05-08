@@ -6,6 +6,7 @@
 #include "Collider.h"
 #include "Animation.h"
 #include "Vector2d.h"
+#include "Player.h"
 
 #define MOVE_TIME 50.0f
 #define IDLE_TIME 50.0f
@@ -23,9 +24,11 @@ class Enemy: public Character
         virtual void Update( float dt );
         virtual void Clean();
 
+        void SetPlayer(Player* plr) {
+            m_Player = plr;
+        }
     private:
         void AnimationState();
-
     private:
         bool m_IsGrounded;
         bool m_IsAttacking;
@@ -46,6 +49,9 @@ class Enemy: public Character
         RigidBody* m_RigidBody;
 
         Vector2D m_LastSafePosition;
+
+        Player* m_Player;
+        Attack* m_Attack;
 };
 
 #endif // ENEMY_H

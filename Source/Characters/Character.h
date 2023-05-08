@@ -10,9 +10,12 @@ class Character : public GameObject {
         virtual void Draw()=0;
         virtual void Update( float dt )=0;
         virtual void Clean()=0;
-
+        Transform* GetTrans() {
+            return m_Transform;
+        }
     protected:
         std::string m_Name;
+
 
 };
 

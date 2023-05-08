@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <math.h>
 #include "Enemy.h"
 #include "Texture.h"
 #include "Input.h"
@@ -30,12 +31,14 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
     m_RigidBody->SetGravity( 9.8f );
 
     m_Animation = new Animation();
+    m_Attack = new Attack(new Properties("attack", 200, 200, 32, 25), (0, 0));
 }
 
 void Enemy::Draw()
 {
     m_Animation->Draw( m_Transform->X, m_Transform->Y, m_Width, m_Height, m_Flip );
     m_Collider->DrawDebug();
+    if(m_IsAttacking) m_Attack->Draw();
 }
 
 void Enemy::Update(float dt)
@@ -43,8 +46,28 @@ void Enemy::Update(float dt)
     m_IsRunning = false;
     m_RigidBody->UnSetForce();
 
-    //random number
+    //auto move to player
+    if(GetTrans()->X > m_Player->GetTrans()->X + 60) {
+        m_Flip = SDL_FLIP_NONE;
+        m_IsRunning = true; m_RigidBody->ApplyForceX(BACKWARD*RUN_FORCE*0.25);
+        m_IsLeft = true;
+    } else if(GetTrans()->X < m_Player->GetTrans()->X) {
+        m_Flip = SDL_FLIP_HORIZONTAL;
+        m_IsRunning = true; m_RigidBody->ApplyForceX(FORWARD*RUN_FORCE*0.25);
+        m_IsLeft = false;
+    } else {
+        m_IsAttacking = true;
+        m_IsRunning = false;
+    }
 
+    if(m_IsAttacking && m_AttackTime > 0) {
+        m_AttackTime -= dt;
+        m_Attack->Update(dt);
+    } else {
+        m_IsAttacking = false;
+        m_AttackTime = ATTACK_TIME;
+        m_Attack->SetPosition(m_Transform->X + m_Width, m_Transform->X - m_Width, m_Transform->Y, m_IsLeft);
+    }
 
     m_RigidBody->Update( dt );
     m_LastSafePosition.X = m_Transform->X;
@@ -87,5 +110,5 @@ void Enemy::AnimationState() {
     if(m_IsRunning) m_Animation->SetProps( m_TextureID, 0, m_IdleFrame, 250);
 
     // attacking
-    if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 1, m_AttackFrame, 60 );
+    if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 1, m_AttackFrame, 100 );
 }
