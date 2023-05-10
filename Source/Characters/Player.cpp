@@ -5,9 +5,11 @@
 #include "Camera.h"
 #include "CollisionHandler.h"
 #include "Attack.h"
+#include "EnemyManager.h"
 
-Attack* Shoot = nullptr;
-Attack* Slash = nullptr;
+//Attack* Player::Shoot = nullptr;
+//Attack* Player::Slash = nullptr;
+Attack* Player::m_CurrentAttack = nullptr;
 
 Player::Player( Properties* props ): Character(props)
 {
@@ -24,6 +26,8 @@ Player::Player( Properties* props ): Character(props)
     m_AttackTime = ATTACK_TIME;
     m_JumpTime = JUMP_TIME;
     m_Jump_Force = JUMP_FORCE;
+    m_CoolDown = 0;
+
 
     m_Collider = new Collider();
     m_Collider->SetBuffer( -40, -15, 80, 20 );
@@ -33,7 +37,9 @@ Player::Player( Properties* props ): Character(props)
 
     m_Animation = new Animation();
     Shoot = new Attack(new Properties("Shoot", 100, 300, 63, 32), (7, 7));
-    Slash = new Attack(new Properties("Slash", 100, 100, 37, 55), (0, 0));
+    Shoot->SetDamage(10);
+    Slash = new Attack(new Properties("Slash", 100, 100, 37, 50), (0, 0));
+    Slash->SetDamage(5);
 }
 
 void Player::Draw()
@@ -48,6 +54,7 @@ void Player::Update(float dt)
 {
     m_IsRunning = false;
     m_RigidBody->UnSetForce();
+    m_CoolDown -= dt;
 
     // idle state
     if(Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A)) {
@@ -73,14 +80,14 @@ void Player::Update(float dt)
     }
 
     // attack
-    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_F ) )
+    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_F ) && m_CoolDown <= 0 )
     {
         m_RigidBody->UnSetForce();
         m_IsAttacking = true;
     }
 
     // punching
-    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_Q ) )
+    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_Q ) && m_CoolDown <= 0 )
     {
         m_RigidBody->UnSetForce();
         m_IsPunching = true;
@@ -110,27 +117,32 @@ void Player::Update(float dt)
     else m_IsFalling = false;
 
     // attack timer
-    if(m_IsAttacking && m_AttackTime > 0) {
+    if(m_IsAttacking && m_AttackTime > 0 && !m_Hit && m_CoolDown <= 0 ) {
         m_AttackTime -= dt;
         Slash->Update(dt);
+        SetCurrentAttack(Slash);
     } else {
+        if(m_AttackTime <= 0) m_CoolDown = COOL_DOWN;
         m_IsAttacking = false;
         m_AttackTime = ATTACK_TIME;
         Slash->SetPosition(m_Transform->X+60, m_Transform->X+3,m_Transform->Y+17, m_IsLeft);
     }
 
+
     // punch timer
-    if(m_IsPunching && m_PunchTime > 0) {
+    if(m_IsPunching && m_PunchTime > 0 && !m_Hit && m_CoolDown <= 0) {
         m_PunchTime -= dt;
     } else {
+        if(m_PunchTime <= 0) m_CoolDown = COOL_DOWN;
         m_IsPunching = false;
         m_PunchTime = PUNCH_TIME;
     }
 
     //Shoot timer
-    if(m_IsShoot && m_ShootTime > 0) {
+    if(m_IsShoot && m_ShootTime > 0 && !m_Hit) {
         m_ShootTime -= dt;
         Shoot->Update(dt);
+        SetCurrentAttack(Shoot);
     } else {
         m_IsShoot = false;
         m_ShootTime = SHOOT_TIME;
@@ -176,7 +188,7 @@ void Player::AnimationState() {
     if(m_IsRunning) m_Animation->SetProps( m_TextureID, 7, 6, 60);
 
     // attacking
-    if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 4, 5, 60 );
+    if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 4, 5, 50);
 
     // jumping
     if(m_IsJumping) m_Animation->SetProps( m_TextureID, 2, 3, 200 );

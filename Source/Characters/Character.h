@@ -15,7 +15,7 @@ class Character : public GameObject {
         }
     protected:
         std::string m_Name;
-
+        int Health;
 
 };
 

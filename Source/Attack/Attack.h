@@ -41,16 +41,23 @@ class Attack: public GameObject
                 m_Transform->X = xr;
                 m_Transform->Y = y;
             }
-
-
         }
-        //SDL_Rect GetBox() {return m_Box;}
+
+        void SetDamage(int dmg) {
+            m_Damage = dmg;
+        }
+
+        int GetDamage() {
+            return m_Damage;
+        }
+        SDL_Rect GetBox() {return m_Collider->Get();}
     private:
         //SDL_Rect m_Box;
         Vector2D m_Vel;
         Animation* m_animation;
         int m_IsLeft;
         Collider* m_Collider;
+        int m_Damage;
 };
 
 #endif // ATTACK_H

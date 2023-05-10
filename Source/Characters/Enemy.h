@@ -19,7 +19,6 @@ class Enemy: public Character
 
     public:
         Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame);
-
         virtual void Draw();
         virtual void Update( float dt );
         virtual void Clean();
@@ -27,6 +26,9 @@ class Enemy: public Character
         void SetPlayer(Player* plr) {
             m_Player = plr;
         }
+        SDL_Rect GetBox() {return m_Collider->Get();}
+        bool StillAlive();
+        void GetHit(int DmgTaken);
     private:
         void AnimationState();
     private:
@@ -34,6 +36,7 @@ class Enemy: public Character
         bool m_IsAttacking;
         bool m_IsRunning;
         bool m_IsLeft;
+        bool m_IsDead;
 
         float m_AttackTime;
         float m_RunTime;

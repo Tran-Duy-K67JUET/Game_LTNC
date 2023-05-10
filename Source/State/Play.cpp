@@ -9,13 +9,14 @@
 #include "MapParser.h"
 #include "Player.h"
 #include "Camera.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
 
 
 Play *Play::s_Instance = nullptr;
 Button* pause = nullptr;
 Player* player = nullptr;
-Enemy* smile = nullptr;
+EnemyManager *smile = nullptr;
+
 
 
 void Play::Init()
@@ -25,13 +26,13 @@ void Play::Init()
     Texture::GetInstance()->Load("PlayBt", "assets/interface/pixelButton.png");
     Texture::GetInstance()->Load("Player", "assets/entities/player.png");
     Texture::GetInstance()->Load("Shoot", "assets/entities/spark-Sheet.png");
+    Texture::GetInstance()->Load("Slash", "assets/entities/slash.png");
     Texture::GetInstance()->Load("Smile", "assets/entities/Smile.png");
     pause = new Button(new Properties("PlayBt", 0, 0, 192, 192), 5, 1, 0.25);
     if(!MapParser::GetInstance()->Load()) SDL_Log("Failed to load map!");
     m_LevelMap = MapParser::GetInstance()->GetMap("map0001");
     player = new Player(new Properties("Player", 100, 300, 100, 74));
-    smile = new Enemy(new Properties("Smile", 200, 400, 32, 25), 8, 8, 5);
-    smile->SetPlayer(player);
+    smile = new EnemyManager(player);
     Camera::GetInstance()->SetTarget( player->GetOrigin() );
 }
 

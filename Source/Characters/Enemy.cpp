@@ -9,6 +9,7 @@
 
 Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): Character(props)
 {
+    SDL_Log("Enemy Init!");
     m_AttackFrame = AttackFrame;
     m_IdleFrame = IdleFrame;
     m_DeadFrame = DeadFrame;
@@ -18,6 +19,7 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
     m_IsRunning = false;
     m_IsGrounded = false;
     m_IsLeft = false;
+    m_IsDead = false;
 
     m_Flip = SDL_FLIP_NONE;
     m_AttackTime = ATTACK_TIME;
@@ -32,6 +34,8 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
 
     m_Animation = new Animation();
     m_Attack = new Attack(new Properties("attack", 200, 200, 32, 25), (0, 0));
+
+    Health = 100;
 }
 
 void Enemy::Draw()
@@ -47,22 +51,27 @@ void Enemy::Update(float dt)
     m_RigidBody->UnSetForce();
 
     //auto move to player
-    if(GetTrans()->X > m_Player->GetTrans()->X + 60) {
-        m_Flip = SDL_FLIP_NONE;
-        m_IsRunning = true; m_RigidBody->ApplyForceX(BACKWARD*RUN_FORCE*0.25);
-        m_IsLeft = true;
-    } else if(GetTrans()->X < m_Player->GetTrans()->X) {
-        m_Flip = SDL_FLIP_HORIZONTAL;
-        m_IsRunning = true; m_RigidBody->ApplyForceX(FORWARD*RUN_FORCE*0.25);
-        m_IsLeft = false;
-    } else {
-        m_IsAttacking = true;
-        m_IsRunning = false;
+    if(m_IsDead == false) {
+        if(GetTrans()->X > m_Player->GetTrans()->X + 60) {
+            m_Flip = SDL_FLIP_NONE;
+            m_IsRunning = true; m_RigidBody->ApplyForceX(BACKWARD*RUN_FORCE*0.25);
+            m_IsLeft = true;
+        } else if(GetTrans()->X < m_Player->GetTrans()->X) {
+            m_Flip = SDL_FLIP_HORIZONTAL;
+            m_IsRunning = true; m_RigidBody->ApplyForceX(FORWARD*RUN_FORCE*0.25);
+            m_IsLeft = false;
+        } else {
+            m_IsAttacking = true;
+            m_IsRunning = false;
+        }
     }
 
     if(m_IsAttacking && m_AttackTime > 0) {
         m_AttackTime -= dt;
         m_Attack->Update(dt);
+        if(CollisionHandler::GetInstance()->CheckCollision(m_Attack->GetBox(), m_Player->GetBox()) && (m_AttackTime < 10.0f)) {
+            m_Player->GetHit(true);
+        }
     } else {
         m_IsAttacking = false;
         m_AttackTime = ATTACK_TIME;
@@ -95,6 +104,7 @@ void Enemy::Update(float dt)
     m_Origin->Y = m_Transform->Y + m_Height/2;
     AnimationState();
     m_Animation->Update();
+    if(m_IsDead) Clean();
 }
 
 void Enemy::Clean()
@@ -111,4 +121,20 @@ void Enemy::AnimationState() {
 
     // attacking
     if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 1, m_AttackFrame, 100 );
+
+    // dead
+    if(m_IsDead) m_Animation->SetProps(m_TextureID, 2, m_DeadFrame, 100);
+}
+
+bool Enemy::StillAlive() {
+    //return m_Index->Health != 0;
+    return true;
+}
+
+void Enemy::GetHit(int DmgTaken) {
+    Health -= DmgTaken;
+    std::cout << "smile get hit "<< Health << std::endl;
+    if(Health <= 0) m_IsDead = true;
+
+    m_RigidBody->UnSetForce();
 }
