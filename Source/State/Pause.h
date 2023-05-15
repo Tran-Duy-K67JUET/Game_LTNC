@@ -14,9 +14,14 @@ class Pause: public State
         void Clean();
         void Listen();
 
+        void Death() {
+            m_Death = true;
+        }
+
     private:
         Pause(){}
         static Pause* s_Instance;
+        bool m_Death;
 };
 
 #endif // PAUSE_H

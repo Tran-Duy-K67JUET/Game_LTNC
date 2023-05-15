@@ -14,10 +14,10 @@
 #define JUMP_TIME 10.0f
 #define JUMP_FORCE 20.0f
 #define RUN_FORCE 15.0f
-#define ATTACK_TIME 20.0f
+#define ATTACK_TIME 5.0f
 #define PUNCH_TIME 7.5f
 #define SHOOT_TIME 20.0f
-#define COOL_DOWN 10.0f
+#define COOL_DOWN 20.0f
 
 class Player: public Character
 {
@@ -30,11 +30,8 @@ class Player: public Character
         virtual void Clean();
 
         SDL_Rect GetBox() {return m_Collider->Get();}
-        void GetHit(bool m_getHit) {
-        }
-        void HitTarget(bool hit) {
-            m_Hit = hit;
-        }
+        void GetHit();
+        void DeadStatment();
         Attack* Hit() {
             return m_CurrentAttack;
         }

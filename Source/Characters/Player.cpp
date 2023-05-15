@@ -6,9 +6,9 @@
 #include "CollisionHandler.h"
 #include "Attack.h"
 #include "EnemyManager.h"
+#include "Pause.h"
+#include "Engine.h"
 
-//Attack* Player::Shoot = nullptr;
-//Attack* Player::Slash = nullptr;
 Attack* Player::m_CurrentAttack = nullptr;
 
 Player::Player( Properties* props ): Character(props)
@@ -36,18 +36,14 @@ Player::Player( Properties* props ): Character(props)
     m_RigidBody->SetGravity( 9.8f );
 
     m_Animation = new Animation();
-    Shoot = new Attack(new Properties("Shoot", 100, 300, 63, 32), (7, 7));
-    Shoot->SetDamage(10);
-    Slash = new Attack(new Properties("Slash", 100, 100, 37, 50), (0, 0));
-    Slash->SetDamage(5);
+    Health = 1;
 }
 
 void Player::Draw()
 {
     m_Animation->Draw( m_Transform->X, m_Transform->Y, m_Width, m_Height, m_Flip );
-    if(m_IsShoot) Shoot->Draw();
-    if(m_IsAttacking) Slash->Draw();
     m_Collider->DrawDebug();
+    if(m_CurrentAttack != nullptr) m_CurrentAttack->Draw();
 }
 
 void Player::Update(float dt)
@@ -80,18 +76,22 @@ void Player::Update(float dt)
     }
 
     // attack
-    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_F ) && m_CoolDown <= 0 )
+    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_F ) )
     {
         m_RigidBody->UnSetForce();
         m_IsAttacking = true;
+        SetCurrentAttack(new Attack(new Properties("Slash", 100, 100, 37, 50), (0, 0), 1));
+        m_CurrentAttack->SetPosition(m_Transform->X+60, m_Transform->X+3,m_Transform->Y+17, m_IsLeft);
     }
 
     // punching
-    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_Q ) && m_CoolDown <= 0 )
+    if( Input::GetInstance()->GetKeyDown( SDL_SCANCODE_Q ))
     {
         m_RigidBody->UnSetForce();
         m_IsPunching = true;
         m_IsShoot = true;
+        SetCurrentAttack(new Attack(new Properties("Shoot", m_Transform->X, m_Transform->Y + 30, 63, 32), (7, 7), 1));
+        m_CurrentAttack->SetPosition(m_Transform->X +60, m_Transform->X -30, m_Transform->Y +20, m_IsLeft);
     }
 
     // jumping
@@ -117,20 +117,18 @@ void Player::Update(float dt)
     else m_IsFalling = false;
 
     // attack timer
-    if(m_IsAttacking && m_AttackTime > 0 && !m_Hit && m_CoolDown <= 0 ) {
+    if(m_IsAttacking && m_AttackTime > 0 && m_CoolDown <= 0) {
         m_AttackTime -= dt;
-        Slash->Update(dt);
-        SetCurrentAttack(Slash);
+        if(m_CurrentAttack != nullptr) m_CurrentAttack->Update(dt);
     } else {
         if(m_AttackTime <= 0) m_CoolDown = COOL_DOWN;
         m_IsAttacking = false;
         m_AttackTime = ATTACK_TIME;
-        Slash->SetPosition(m_Transform->X+60, m_Transform->X+3,m_Transform->Y+17, m_IsLeft);
     }
 
 
     // punch timer
-    if(m_IsPunching && m_PunchTime > 0 && !m_Hit && m_CoolDown <= 0) {
+    if(m_IsPunching && m_PunchTime > 0 && m_CoolDown <= 0) {
         m_PunchTime -= dt;
     } else {
         if(m_PunchTime <= 0) m_CoolDown = COOL_DOWN;
@@ -139,14 +137,12 @@ void Player::Update(float dt)
     }
 
     //Shoot timer
-    if(m_IsShoot && m_ShootTime > 0 && !m_Hit) {
+    if(m_IsShoot && m_ShootTime > 0) {
         m_ShootTime -= dt;
-        Shoot->Update(dt);
-        SetCurrentAttack(Shoot);
+        if(m_CurrentAttack != nullptr) m_CurrentAttack->Update(dt);
     } else {
         m_IsShoot = false;
         m_ShootTime = SHOOT_TIME;
-        Shoot->SetPosition(m_Transform->X +60, m_Transform->X -30, m_Transform->Y +20, m_IsLeft);
     }
 
     m_RigidBody->Update( dt );
@@ -173,11 +169,22 @@ void Player::Update(float dt)
     m_Origin->Y = m_Transform->Y + m_Height/2;
     AnimationState();
     m_Animation->Update();
+    if(Health <=0) DeadStatment();
 }
 
 void Player::Clean()
 {
     Texture::GetInstance()->Drop( m_TextureID );
+}
+
+void Player::GetHit() {
+    Health--;
+    std::cout << Health << std::endl;
+}
+
+void Player::DeadStatment() {
+    Engine::GetInstance()->ChangeState(Pause::GetInstance());
+    Pause::GetInstance()->Death();
 }
 
 void Player::AnimationState() {

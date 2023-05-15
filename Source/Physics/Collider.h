@@ -29,7 +29,10 @@ class Collider
                 h - m_Buffer.h,
             };
         }
-
+        void Clean() {
+            m_Box = {0, 0, 0, 0};
+            m_Buffer = {0, 0, 0, 0};
+        }
     private:
     SDL_Rect m_Box;
     SDL_Rect m_Buffer;

@@ -13,6 +13,7 @@ Button *repeat = nullptr;
 void Pause::Init()
 {
     SDL_Log("Pause mode!");
+    m_Death = false;
     Texture::GetInstance()->Load("PlayBg", "assets/backgrounds/background_2.jpg");
     Texture::GetInstance()->Load("PlayBt", "assets/interface/pixelButton.png");
     resume = new Button(new Properties("PlayBt", 375, 375, 192, 192), 6, 0, 1);
@@ -23,7 +24,7 @@ void Pause::Init()
 void Pause::Update()
 {
     float dt = Timer::GetInstance()->GetDeltaTime();
-    resume->Update(dt);
+    if(!m_Death) resume->Update(dt);
     menu->Update(dt);
     repeat->Update(dt);
 }
@@ -31,7 +32,7 @@ void Pause::Update()
 void Pause::Render()
 {
     Texture::GetInstance()->Draw("PlayBg", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    resume->Draw();
+    if(!m_Death) resume->Draw();
     menu->Draw();
     repeat->Draw();
 }
@@ -46,7 +47,7 @@ void Pause::Clean()
 
 void Pause::Listen()
 {
-    if(resume->IsPressed()) Engine::GetInstance()->PushState(Play::GetInstance());
+    if(!m_Death) if(resume->IsPressed()) Engine::GetInstance()->PushState(Play::GetInstance());
     if(menu->IsPressed()) Engine::GetInstance()->ChangeState(Menu::GetInstance());
     if(repeat->IsPressed()) Engine::GetInstance()->ChangeState(Play::GetInstance());
 }

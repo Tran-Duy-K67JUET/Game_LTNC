@@ -11,8 +11,8 @@
 #define MOVE_TIME 50.0f
 #define IDLE_TIME 50.0f
 #define RUN_FORCE 15.0f
-#define ATTACK_TIME 20.0f
-#define PUNCH_TIME 7.5f
+#define SMILE_ATTACK_TIME 20.0f
+#define DEAD_TIME 5.0f
 
 class Enemy: public Character
 {
@@ -26,9 +26,20 @@ class Enemy: public Character
         void SetPlayer(Player* plr) {
             m_Player = plr;
         }
-        SDL_Rect GetBox() {return m_Collider->Get();}
+
+        SDL_Rect GetBox() {
+            return m_Collider->Get();
+        }
+
         bool StillAlive();
-        void GetHit(int DmgTaken);
+
+        void GetHit(int DmgTaken) {
+            Health -= DmgTaken;
+        }
+
+        void SetUpdate(int update) {
+            Health += update * 2;
+        }
     private:
         void AnimationState();
     private:
@@ -41,6 +52,7 @@ class Enemy: public Character
         float m_AttackTime;
         float m_RunTime;
         float m_IdleTime;
+        float m_DeadTime;
 
         int m_AttackFrame;
         int m_IdleFrame;

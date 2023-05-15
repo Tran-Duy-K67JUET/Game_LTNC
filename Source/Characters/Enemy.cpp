@@ -22,9 +22,10 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
     m_IsDead = false;
 
     m_Flip = SDL_FLIP_NONE;
-    m_AttackTime = ATTACK_TIME;
+    m_AttackTime = SMILE_ATTACK_TIME;
     m_RunTime = MOVE_TIME;
     m_IdleTime = IDLE_TIME;
+    m_DeadTime = DEAD_TIME;
 
     m_Collider = new Collider();
     m_Collider->SetBuffer( 0, 0, 0, 0);
@@ -33,25 +34,26 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
     m_RigidBody->SetGravity( 9.8f );
 
     m_Animation = new Animation();
-    m_Attack = new Attack(new Properties("attack", 200, 200, 32, 25), (0, 0));
+    m_Attack = new Attack(new Properties("attack", 200, 200, 32, 25), (0, 0), 0);
 
-    Health = 100;
+
 }
 
 void Enemy::Draw()
 {
     m_Animation->Draw( m_Transform->X, m_Transform->Y, m_Width, m_Height, m_Flip );
     m_Collider->DrawDebug();
-    if(m_IsAttacking) m_Attack->Draw();
+    //if(m_IsAttacking) m_Attack->Draw();
 }
 
 void Enemy::Update(float dt)
 {
     m_IsRunning = false;
     m_RigidBody->UnSetForce();
+    m_IsDead = !StillAlive();
 
     //auto move to player
-    if(m_IsDead == false) {
+    if(!m_IsDead) {
         if(GetTrans()->X > m_Player->GetTrans()->X + 60) {
             m_Flip = SDL_FLIP_NONE;
             m_IsRunning = true; m_RigidBody->ApplyForceX(BACKWARD*RUN_FORCE*0.25);
@@ -66,17 +68,22 @@ void Enemy::Update(float dt)
         }
     }
 
+    //attack player
     if(m_IsAttacking && m_AttackTime > 0) {
         m_AttackTime -= dt;
         m_Attack->Update(dt);
-        if(CollisionHandler::GetInstance()->CheckCollision(m_Attack->GetBox(), m_Player->GetBox()) && (m_AttackTime < 10.0f)) {
-            m_Player->GetHit(true);
+        if(CollisionHandler::GetInstance()->CheckCollision(m_Attack->GetBox(), m_Player->GetBox()) && ((int)(m_AttackTime - 10.0f) == 0) && m_AttackTime >= 10.0f) {
+            m_Player->GetHit();
         }
     } else {
         m_IsAttacking = false;
-        m_AttackTime = ATTACK_TIME;
+        m_AttackTime = SMILE_ATTACK_TIME;
         m_Attack->SetPosition(m_Transform->X + m_Width, m_Transform->X - m_Width, m_Transform->Y, m_IsLeft);
     }
+
+
+
+
 
     m_RigidBody->Update( dt );
     m_LastSafePosition.X = m_Transform->X;
@@ -104,11 +111,11 @@ void Enemy::Update(float dt)
     m_Origin->Y = m_Transform->Y + m_Height/2;
     AnimationState();
     m_Animation->Update();
-    if(m_IsDead) Clean();
 }
 
 void Enemy::Clean()
 {
+    m_Collider->Clean();
     Texture::GetInstance()->Drop( m_TextureID );
 }
 
@@ -127,14 +134,6 @@ void Enemy::AnimationState() {
 }
 
 bool Enemy::StillAlive() {
-    //return m_Index->Health != 0;
-    return true;
+    return (Health < 0) ? false : true;
 }
 
-void Enemy::GetHit(int DmgTaken) {
-    Health -= DmgTaken;
-    std::cout << "smile get hit "<< Health << std::endl;
-    if(Health <= 0) m_IsDead = true;
-
-    m_RigidBody->UnSetForce();
-}
