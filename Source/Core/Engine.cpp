@@ -2,6 +2,8 @@
 #include "Input.h"
 #include "Menu.h"
 #include "Texture.h"
+#include "ChosenPhase.h"
+#include "Pause.h"
 
 Engine* Engine::s_Instance = nullptr;
 State* Engine::m_CurrentState = nullptr;
@@ -35,6 +37,8 @@ void Engine::Init()
     m_IsRunning = true;
     m_CurrentState = Menu::GetInstance();
     m_CurrentState->Init();
+    ChosenPhase::GetInstance()->Init();
+    Pause::GetInstance()->Init();
 }
 
 void Engine::Render()

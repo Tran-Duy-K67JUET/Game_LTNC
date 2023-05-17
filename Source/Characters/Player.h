@@ -29,15 +29,20 @@ class Player: public Character
         virtual void Update( float dt );
         virtual void Clean();
 
-        SDL_Rect GetBox() {return m_Collider->Get();}
         void GetHit();
         void DeadStatment();
-        Attack* Hit() {
-            return m_CurrentAttack;
-        }
-        void SetCurrentAttack(Attack* atk) {
-            m_CurrentAttack = atk;
-        }
+
+        SDL_Rect GetBox() {return m_Collider->Get();}
+
+        void SetSlash(int dmg) {Slash = dmg;}
+        void SetShoot(int dmg) {Shoot = dmg;}
+
+        int GetSlash() {return Slash;}
+        int GetShoot() {return Shoot;}
+
+        Attack* Hit() {return m_CurrentAttack;}
+        void SetCurrentAttack(Attack* atk) {m_CurrentAttack = atk;}
+        void UseItems(int Type, int inf);
     private:
         void AnimationState();
 
@@ -59,6 +64,9 @@ class Player: public Character
         float m_ShootTime;
         float m_CoolDown;
 
+        int Slash;
+        int Shoot;
+
         Collider* m_Collider;
 
         Animation* m_Animation;
@@ -66,8 +74,6 @@ class Player: public Character
 
         Vector2D m_LastSafePosition;
 
-        Attack *Shoot;
-        Attack *Slash;
         static Attack *m_CurrentAttack;
 };
 

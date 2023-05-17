@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "Player.h"
 
+
 class EnemyManager
 {
     public:
@@ -16,6 +17,8 @@ class EnemyManager
 
         void CheckEnemy();
         void NewLevel(int Level);
+        int GetLever(){return m_LevelCnt;}
+        int GetScore(){return m_Score;}
 
     private:
         std::vector<Enemy*> m_Pooling;
@@ -24,6 +27,7 @@ class EnemyManager
         int m_Size;
         int m_LevelCnt;
         int Defeated;
+        int m_Score;
 
 };
 

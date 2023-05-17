@@ -17,11 +17,16 @@ class Pause: public State
         void Death() {
             m_Death = true;
         }
-
+        void GetScore(int Round, int Score) {
+            r = Round;
+            s = Score;
+        }
     private:
         Pause(){}
         static Pause* s_Instance;
         bool m_Death;
+
+        int r, s;
 };
 
 #endif // PAUSE_H

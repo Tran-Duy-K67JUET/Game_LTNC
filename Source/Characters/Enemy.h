@@ -35,10 +35,12 @@ class Enemy: public Character
 
         void GetHit(int DmgTaken) {
             Health -= DmgTaken;
+            std::cout << Health << std::endl;
         }
 
-        void SetUpdate(int update) {
-            Health += update * 2;
+        void SetHealth(int h) {
+            Health = h;
+            m_IsDead = false;
         }
     private:
         void AnimationState();
@@ -47,6 +49,7 @@ class Enemy: public Character
         bool m_IsAttacking;
         bool m_IsRunning;
         bool m_IsLeft;
+        bool m_Dying;
         bool m_IsDead;
 
         float m_AttackTime;

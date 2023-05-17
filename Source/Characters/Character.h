@@ -13,6 +13,9 @@ class Character : public GameObject {
         Transform* GetTrans() {
             return m_Transform;
         }
+        int GetHealth() {
+            return Health;
+        }
     protected:
         std::string m_Name;
         int Health;

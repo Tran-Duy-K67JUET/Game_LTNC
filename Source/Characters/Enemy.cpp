@@ -20,6 +20,7 @@ Enemy::Enemy(Properties* props, int AttackFrame, int IdleFrame, int DeadFrame): 
     m_IsGrounded = false;
     m_IsLeft = false;
     m_IsDead = false;
+    m_Dying = false;
 
     m_Flip = SDL_FLIP_NONE;
     m_AttackTime = SMILE_ATTACK_TIME;
@@ -50,7 +51,6 @@ void Enemy::Update(float dt)
 {
     m_IsRunning = false;
     m_RigidBody->UnSetForce();
-    m_IsDead = !StillAlive();
 
     //auto move to player
     if(!m_IsDead) {
@@ -81,9 +81,17 @@ void Enemy::Update(float dt)
         m_Attack->SetPosition(m_Transform->X + m_Width, m_Transform->X - m_Width, m_Transform->Y, m_IsLeft);
     }
 
-
-
-
+    //health
+    if(Health < 0) {
+        m_Dying = true;
+        if(m_DeadTime < 0) {
+            m_DeadTime = DEAD_TIME;
+            m_Dying = false;
+            m_IsDead = true;
+        } else {
+            m_DeadTime -= dt;
+        }
+    }
 
     m_RigidBody->Update( dt );
     m_LastSafePosition.X = m_Transform->X;
@@ -130,10 +138,10 @@ void Enemy::AnimationState() {
     if(m_IsAttacking) m_Animation->SetProps( m_TextureID, 1, m_AttackFrame, 100 );
 
     // dead
-    if(m_IsDead) m_Animation->SetProps(m_TextureID, 2, m_DeadFrame, 100);
+    if(m_Dying) m_Animation->SetProps(m_TextureID, 2, m_DeadFrame, 100);
 }
 
 bool Enemy::StillAlive() {
-    return (Health < 0) ? false : true;
+    return !m_IsDead;
 }
 

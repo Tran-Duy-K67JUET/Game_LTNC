@@ -6,6 +6,8 @@
 #include "Button.h"
 #include "Timer.h"
 #include "Menu.h"
+
+
 Pause* Pause::s_Instance = nullptr;
 Button *resume = nullptr;
 Button *menu = nullptr;
@@ -33,15 +35,16 @@ void Pause::Render()
 {
     Texture::GetInstance()->Draw("PlayBg", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     if(!m_Death) resume->Draw();
+    if (m_Death) Texture::GetInstance()->DrawText("HighScre", "High score:   "+std::to_string(r)+"   levels   "+ std::to_string(s)+ "  scores ", 300, 200, 0.5);
     menu->Draw();
     repeat->Draw();
 }
 
 void Pause::Clean()
 {
-    resume->Clean();
-    menu->Clean();
-    repeat->Clean();
+    //resume->Clean();
+    //menu->Clean();
+    //repeat->Clean();
     Texture::GetInstance()->Drop("PlayBg");
 }
 
@@ -51,3 +54,4 @@ void Pause::Listen()
     if(menu->IsPressed()) Engine::GetInstance()->ChangeState(Menu::GetInstance());
     if(repeat->IsPressed()) Engine::GetInstance()->ChangeState(Play::GetInstance());
 }
+

@@ -37,7 +37,9 @@ Player::Player( Properties* props ): Character(props)
     m_RigidBody->SetGravity( 9.8f );
 
     m_Animation = new Animation();
-    Health = 1;
+    Health = 10;
+    Slash = 1;
+    Shoot = 2;
 }
 
 void Player::Draw()
@@ -81,7 +83,7 @@ void Player::Update(float dt)
     {
         m_RigidBody->UnSetForce();
         m_IsAttacking = true;
-        SetCurrentAttack(new Attack(new Properties("Slash", 100, 100, 37, 50), (0, 0), 1));
+        SetCurrentAttack(new Attack(new Properties("Slash", 100, 100, 37, 50), (0, 0), Slash));
         m_CurrentAttack->SetPosition(m_Transform->X+60, m_Transform->X+3,m_Transform->Y+17, m_IsLeft);
     }
 
@@ -91,7 +93,7 @@ void Player::Update(float dt)
         m_RigidBody->UnSetForce();
         m_IsPunching = true;
         m_IsShoot = true;
-        SetCurrentAttack(new Attack(new Properties("Shoot", m_Transform->X, m_Transform->Y + 30, 63, 32), (7, 7), 1));
+        SetCurrentAttack(new Attack(new Properties("Shoot", m_Transform->X, m_Transform->Y + 30, 63, 32), (7, 7), Shoot));
         m_CurrentAttack->SetPosition(m_Transform->X +60, m_Transform->X -30, m_Transform->Y +20, m_IsLeft);
     }
 
@@ -209,4 +211,18 @@ void Player::AnimationState() {
 
     // punching
     if(m_IsPunching) m_Animation->SetProps(m_TextureID, 8, 5, 60);
+}
+
+void Player::UseItems(int Type, int inf) {
+    switch (Type) {
+    case 1:
+        Health += inf;
+        break;
+    case 2:
+        Slash += inf;
+        break;
+    case 3:
+        Shoot += inf;
+        break;
+    }
 }
