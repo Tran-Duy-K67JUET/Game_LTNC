@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "EnemyManager.h"
+#include "Sound.h"
 
 
 Play *Play::s_Instance = nullptr;
@@ -28,12 +29,16 @@ void Play::Init()
     Texture::GetInstance()->Load("Shoot", "assets/entities/spark-Sheet.png");
     Texture::GetInstance()->Load("Slash", "assets/entities/slash.png");
     Texture::GetInstance()->Load("Smile", "assets/entities/Smile.png");
+    Sound::GetInstance()->LoadMusic("PlaySound", "assets/sounds/Play.wav");
+    Sound::GetInstance()->LoadEffect("Shoot", "assets/sounds/Shoot.wav");
+    Sound::GetInstance()->LoadEffect("Slash", "assets/sounds/Slash.wav");
     pause = new Button(new Properties("PlayBt", 0, 0, 192, 192), 5, 1, 0.25);
     if(!MapParser::GetInstance()->Load()) SDL_Log("Failed to load map!");
     m_LevelMap = MapParser::GetInstance()->GetMap("map0001");
     player = new Player(new Properties("Player", 100, 300, 100, 74));
     smile = new EnemyManager(player);
     Camera::GetInstance()->SetTarget( player->GetOrigin() );
+    Sound::GetInstance()->PlayMusic("PlaySound");
 }
 
 void Play::Update()
@@ -59,6 +64,7 @@ void Play::Clean()
 {
     player->Clean();
     pause->Clean();
+    Sound::GetInstance()->Clean();
     Texture::GetInstance()->Drop("PlayBg");
     Texture::GetInstance()->Drop("Game");
 }

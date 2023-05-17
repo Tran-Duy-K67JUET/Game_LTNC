@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Button.h"
 #include "Timer.h"
+#include "Sound.h"
 
 Menu *Menu::s_Instance = nullptr;
 Button *play = nullptr;
@@ -13,16 +14,19 @@ Button *ranking = nullptr;
 void Menu::Init()
 {
     SDL_Log("Mode: Menu");
+    Sound::GetInstance()->LoadMusic("MenuSound", "assets/sounds/Menu.ogg");
     Texture::GetInstance()->Load("MenuBg", "assets/backgrounds/Background.png");
     Texture::GetInstance()->Load("PlayBt", "assets/interface/pixelButton.png");
     play = new Button(new Properties("PlayBt", 320, 480, 192, 192), 6, 0, 0.5);
     quit = new Button(new Properties("PlayBt", 520, 480, 192, 192), 1, 0, 0.5);
     ranking = new Button (new Properties("PlayBt", 420, 480, 192, 192), 0, 0, 0.5);
+    Sound::GetInstance()->PlayMusic("MenuSound");
 }
 
 void Menu::Update()
 {
     float dt = Timer::GetInstance()->GetDeltaTime();
+
     play->Update(dt);
     quit->Update(dt);
     ranking->Update(dt);
@@ -50,6 +54,7 @@ void Menu::Clean()
     ranking->Clean();
     Texture::GetInstance()->Drop("MenuBg");
     Texture::GetInstance()->Drop("Game");
+    Sound::GetInstance()->Clean();
 }
 
 void Menu::Listen() {

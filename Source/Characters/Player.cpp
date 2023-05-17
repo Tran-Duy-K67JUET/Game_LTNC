@@ -8,6 +8,7 @@
 #include "EnemyManager.h"
 #include "Pause.h"
 #include "Engine.h"
+#include "Sound.h"
 
 Attack* Player::m_CurrentAttack = nullptr;
 
@@ -126,6 +127,8 @@ void Player::Update(float dt)
         m_AttackTime = ATTACK_TIME;
     }
 
+    if(m_IsPunching) Sound::GetInstance()->PlayeEffect("Shoot");
+    if(m_IsAttacking) Sound::GetInstance()->PlayeEffect("Slash");
 
     // punch timer
     if(m_IsPunching && m_PunchTime > 0 && m_CoolDown <= 0) {
@@ -141,6 +144,7 @@ void Player::Update(float dt)
         m_ShootTime -= dt;
         if(m_CurrentAttack != nullptr) m_CurrentAttack->Update(dt);
     } else {
+        if(m_CurrentAttack != nullptr) m_CurrentAttack->Moving(false);
         m_IsShoot = false;
         m_ShootTime = SHOOT_TIME;
     }
