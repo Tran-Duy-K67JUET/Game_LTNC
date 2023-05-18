@@ -1,6 +1,6 @@
 ### GAME-LTNC: Joe Adventure
-<img src = "" alt = "Menu Game">
-<img src = "" alt = "Game Play">
+<img src = "assets/Demo/Screenshot 2023-05-18 161922.png" alt = "Menu Game">
+<img src = "assets/Demo/Screenshot 2023-05-18 161839.png" alt = "Game Play">
 ## Ý tưởng - lý do chọn game
 Game có ý tưởng từ game Hades mà mình chơi gần đây. Mình chọn game vì thấy game cũng khá đơn giản. Nhưng mà lúc làm rồi thấy các tính năng thiết kế khá khó.
 
