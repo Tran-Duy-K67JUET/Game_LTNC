@@ -19,14 +19,14 @@ Q: Tấn công tầm xa.</br>
 F: Tấn công cận chiến.</br>
 
 ## Các chức năng chính
-Các chức năng chính trong game bao gồm Menu, Pause, sử lý hình ảnh, sử lý va chạm, chức năng vòng đấu(càng chơi lâu càng khó), chức năng lựa chọn trang bị(dùng để tăng các chỉ số cho người chơi */chức năng này chưa được hoàn chỉnh lắm/* )
+Các chức năng chính trong game bao gồm Menu, Pause, sử lý hình ảnh, sử lý va chạm, chức năng vòng đấu(càng chơi lâu càng khó), chức năng lựa chọn trang bị(dùng để tăng các chỉ số cho người chơi *chức năng này chưa được hoàn chỉnh lắm* )
 
 ## Tài liệu tham khảo
 Lazy's Foo: https://lazyfoo.net </br>
 Thư viện SDL2.0: https://www.libsdl.org </br>
 Madsycode: https://www.youtube.com/watch?v=1KD4Ae0tX0g&list=PL-K0viiuJ2RctP5nlJlqmHGeh66-GOZR_ </br>
 Đồ họa: https://itch.io </br>
-Âm thanh: /*Mình tự làm phần âm thanh bằng guitar </br>
+Âm thanh: *Mình tự làm phần âm thanh bằng guitar* </br>
 
 ## Hướng cải tiến
 1. Cải thiện chức năng lựa chọn trang bị 
